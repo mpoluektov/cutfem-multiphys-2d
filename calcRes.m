@@ -182,6 +182,12 @@ for ii=1:((Nx-1)*(Ny-1))
                 [ W_locB, dWdG_locB, dWdu_locB, d2Wd2G_locB, d2Wd2u_locB, d2WdGdu_locB ] = constLawMag( G_loc, u_locB, mgAU, mgKU, aniU );
                 [ W_locC, dWdG_locC, dWdu_locC, d2Wd2G_locC, d2Wd2u_locC, d2WdGdu_locC ] = constLawMag( G_loc, u_locC, mgAU, mgKU, aniU );
                 [ W_locD, dWdG_locD, dWdu_locD, d2Wd2G_locD, d2Wd2u_locD, d2WdGdu_locD ] = constLawMag( G_loc, u_locD, mgAU, mgKU, aniU );
+            elseif ( constLaw == 4 )
+                %. micromagnetism-demagnetisation constitutive law
+                [ W_locA, dWdG_locA, dWdu_locA, d2Wd2G_locA, d2Wd2u_locA, d2WdGdu_locA, d3Wd3G_locA, d3Wd2Gdu_locA, d3WdGd2u_locA ] = constLawMagDem( G_loc, u_locA, mgAU, mgKU, aniU, cf1U, cf2U );
+                [ W_locB, dWdG_locB, dWdu_locB, d2Wd2G_locB, d2Wd2u_locB, d2WdGdu_locB ] = constLawMagDem( G_loc, u_locB, mgAU, mgKU, aniU, cf1U, cf2U );
+                [ W_locC, dWdG_locC, dWdu_locC, d2Wd2G_locC, d2Wd2u_locC, d2WdGdu_locC ] = constLawMagDem( G_loc, u_locC, mgAU, mgKU, aniU, cf1U, cf2U );
+                [ W_locD, dWdG_locD, dWdu_locD, d2Wd2G_locD, d2Wd2u_locD, d2WdGdu_locD ] = constLawMagDem( G_loc, u_locD, mgAU, mgKU, aniU, cf1U, cf2U );
             end
 
             if ( jj == 1 )
@@ -263,6 +269,12 @@ for ii=1:((Nx-1)*(Ny-1))
                 [ W_locB, dWdG_locB, dWdu_locB, d2Wd2G_locB, d2Wd2u_locB, d2WdGdu_locB ] = constLawMag( G_loc, u_locB, mgAT, mgKT, aniT );
                 [ W_locC, dWdG_locC, dWdu_locC, d2Wd2G_locC, d2Wd2u_locC, d2WdGdu_locC ] = constLawMag( G_loc, u_locC, mgAT, mgKT, aniT );
                 [ W_locD, dWdG_locD, dWdu_locD, d2Wd2G_locD, d2Wd2u_locD, d2WdGdu_locD ] = constLawMag( G_loc, u_locD, mgAT, mgKT, aniT );
+            elseif ( constLaw == 4 )
+                %. micromagnetism-demagnetisation constitutive law
+                [ W_locA, dWdG_locA, dWdu_locA, d2Wd2G_locA, d2Wd2u_locA, d2WdGdu_locA, d3Wd3G_locA, d3Wd2Gdu_locA, d3WdGd2u_locA ] = constLawMagDem( G_loc, u_locA, mgAT, mgKT, aniT, cf1T, cf2T );
+                [ W_locB, dWdG_locB, dWdu_locB, d2Wd2G_locB, d2Wd2u_locB, d2WdGdu_locB ] = constLawMagDem( G_loc, u_locB, mgAT, mgKT, aniT, cf1T, cf2T );
+                [ W_locC, dWdG_locC, dWdu_locC, d2Wd2G_locC, d2Wd2u_locC, d2WdGdu_locC ] = constLawMagDem( G_loc, u_locC, mgAT, mgKT, aniT, cf1T, cf2T );
+                [ W_locD, dWdG_locD, dWdu_locD, d2Wd2G_locD, d2Wd2u_locD, d2WdGdu_locD ] = constLawMagDem( G_loc, u_locD, mgAT, mgKT, aniT, cf1T, cf2T );
             end
 
             if ( jj == 1 )
@@ -1241,6 +1253,37 @@ elseif ( geomPar.BCtype == 4 )
     J( sub2ind( 2*sz, indRz_T, indRz_T ) ) = 1;
     J( indRl_T, : ) = 0;
     J( sub2ind( 2*sz, indRl_T, indRl_T ) ) = 1;
+
+elseif ( geomPar.BCtype == 5 )
+    %. test demagnetising field
+
+    indLBn_T = indLB_T-dofs+5;
+
+    %. corner, fix absolute value
+    F(indLBn_T) = u(indLBn_T);
+
+    J( indLBn_T, : ) = 0;
+    J( indLBn_T, indLBn_T ) = 1;
+
+    indLx_T = indL_T-dofs+1;
+    indLy_T = indL_T-dofs+2;
+    indLz_T = indL_T-dofs+3;
+    indLl_T = indL_T-dofs+4;
+
+    %. B.C. transf. left
+    F(indLx_T) = u(indLx_T);
+    F(indLy_T) = u(indLy_T) - sin(pi*yy);
+    F(indLz_T) = u(indLz_T) - cos(pi*yy);
+    F(indLl_T) = u(indLl_T) - 1;
+
+    J( indLx_T, : ) = 0;
+    J( sub2ind( 2*sz, indLx_T, indLx_T ) ) = 1;
+    J( indLy_T, : ) = 0;
+    J( sub2ind( 2*sz, indLy_T, indLy_T ) ) = 1;
+    J( indLz_T, : ) = 0;
+    J( sub2ind( 2*sz, indLz_T, indLz_T ) ) = 1;
+    J( indLl_T, : ) = 0;
+    J( sub2ind( 2*sz, indLl_T, indLl_T ) ) = 1;
 
 end
 

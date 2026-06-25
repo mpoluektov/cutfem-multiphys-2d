@@ -36,10 +36,18 @@ matPar.aniT = pi/2;
 % matPar.mgKT = 2*pi^2/60;
 % matPar.aniU = pi/2;
 % matPar.aniT = 0;
+% matPar.mgAU = 1/100;
+% matPar.mgAT = 1/100;
+% matPar.mgKU = 0;
+% matPar.mgKT = 0;
 matPar.cf1U = 1/100;
 matPar.cf1T = 1/100;
 matPar.cf2U = 1/1000;
 matPar.cf2T = 1/1000;
+% matPar.cf1U = 4;
+% matPar.cf1T = 4;
+% matPar.cf2U = 4;
+% matPar.cf2T = 4;
 matPar.cf3U = 0;
 matPar.cf3T = 0;
 
@@ -62,6 +70,7 @@ geomPar.dh = domainSize/(geomPar.Nx-1);
 %. number of degrees of freedom
 geomPar.dofs = 2;
 % geomPar.dofs = 4;
+% geomPar.dofs = 5;
 
 %. boundary conditions for mechanics
 % geomPar.BCtype = 0;
@@ -74,6 +83,7 @@ geomPar.dofs = 2;
 geomPar.BCtype = 3;
 geomPar.BCdispl = 0.038;
 % geomPar.BCtype = 4;
+% geomPar.BCtype = 5;
 
 %. numerical parameters
 numPar.ATOL = 1e-11;
